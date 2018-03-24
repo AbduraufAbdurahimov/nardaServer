@@ -4,14 +4,17 @@
   "description": "nothing to descripte",
   "main": "main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node main.js"
   },
   "author": "Abdurauf",
   "license": "ISC",
   "dependencies": {
     "socket.io": "^2.0.4"
   },
-  "scripts": {
-    "node main.js"
+  "engines": {
+    "node": "v8.10.0"
   }
+  
 }
+
