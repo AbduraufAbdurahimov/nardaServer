@@ -2,13 +2,13 @@ var io = require("socket.io")({
 	transports : ["websocket"]
 });
 
-//var server_port = process.env.OPENSHIFT_NODEJS_PORT || 8080;
-//var server_ip_address = process.env.OPENSHIFT_NODEJS_IP || "127.0.0.1";
+var server_port = process.env.OPENSHIFT_NODEJS_PORT || 8080;
+var server_ip_address = process.env.OPENSHIFT_NODEJS_IP || "127.0.0.1";
 
-io.attach(8080);
+io.attach(server_port);
 
 console.log("succesfful");
-//console.log( "Listening on " + server_ip_address + ", port " + server_port );
+console.log( "Listening on " + server_ip_address + ", port " + server_port );
 
 var clients = 0;
 var roomsCount = 1;
