@@ -2,7 +2,7 @@ var io = require("socket.io")({
 	transports : ["websocket"]
 });
 
-var server_port = process.env.OPENSHIFT_NODEJS_PORT || 8080;
+var server_port = process.env.OPENSHIFT_NODEJS_PORT || 8881;
 var server_ip_address = process.env.OPENSHIFT_NODEJS_IP || "127.0.0.1";
 
 
@@ -16,9 +16,6 @@ var clients = 0;
 var roomsCount = 1;
 
 io.on("connection", function(socket){
-
-	clients++;
-	console.log("clients ---" + clients);
 
 	socket.on("setMyName", function(data){
 
@@ -40,41 +37,53 @@ io.on("connection", function(socket){
 
 	socket.on("nothingRequest", function(data){
 
-		console.log("#  -----  " + Math.floor(Math.random() * 1000));
-	
 		socket.broadcast.to("room-" + data["id"]).emit("nothingAnsw");
 
 	});
 
-	if( io.nsps["/"].adapter.rooms["room-" + roomsCount] &&  io.nsps["/"].adapter.rooms["room-" + roomsCount].length > 0){
+	var exData = createPost();
+	socket.emit("SendConnectType", exData);
 
-		socket.join("room-" + roomsCount);
+	socket.on("initConnect", function(data){
 
-		var exData = createPost();
-		var ran1 = Math.floor((Math.random() * 6) + 1);
-		var ran2 = Math.floor((Math.random() * 6) + 1);
+		if(data["type"] == "newConnect"){
+			clients++;
+			console.log("clients ---" + clients);
+			if( io.nsps["/"].adapter.rooms["room-" + roomsCount] &&  io.nsps["/"].adapter.rooms["room-" + roomsCount].length > 0){
 
-		while(ran1 == ran2){
+				socket.join("room-" + roomsCount);
 
-			ran2 = Math.floor((Math.random() * 6) + 1);
+				var exData = createPost();
+				var ran1 = Math.floor((Math.random() * 6) + 1);
+				var ran2 = Math.floor((Math.random() * 6) + 1);
+
+				while(ran1 == ran2){
+
+					ran2 = Math.floor((Math.random() * 6) + 1);
+
+				}
+				exData.content.numberArray1 = [ran1 , ran2];
+
+				exData.content.number1 = roomsCount;
+
+				console.log("# = # = # = # = #" + exData.content.numberArray1);
+
+				io.sockets.in("room-" + roomsCount).emit("startSetup", exData);
+
+				roomsCount++;
+
+			}else{
+
+				socket.emit("iAmFirst");
+				socket.join("room-" + roomsCount);
+				
+			}
 
 		}
-		exData.content.numberArray1 = [ran1 , ran2];
 
-		exData.content.number1 = roomsCount;
+	});
 
-		console.log("# = # = # = # = #" + exData.content.numberArray1);
-
-		io.sockets.in("room-" + roomsCount).emit("startSetup", exData);
-
-		roomsCount++;
-
-	}else{
-
-		socket.emit("iAmFirst");
-		socket.join("room-" + roomsCount);
-		
-	}
+	
 
 	socket.on("SetMyForw", function(data){
 
