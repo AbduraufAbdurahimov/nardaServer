@@ -2,8 +2,12 @@
   "scripts": {
     "start": "node main.js"
   },
-  "main": "main.js"
-  
+  "main": "main.js",
+  "keywords": [
+    "node",
+    "heroku",
+    "express"
+  ]
   
 }
 
